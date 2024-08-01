@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dynamic Ticket to PDF</title>
+    <link href="index.css" rel="stylesheet" />
+  </head>
+  <body>
+    <div class="cta">
+      <button class="buy" onclick="generatePDF()">GET A TICKET</button>
+    </div>
+    <div id="ticket" class="ticket ticket-1">
+      <div class="left">
+        <div class="ticket-class">
+          <img src="kp-logo.png" alt="kp-logo" /><span>KELAS PARTY | PKKMB TICKET PASS</span>
+        </div>
+        <div class="ticket-main">
+          <div class="ticket-main-date">
+            <span id="day" class="date">31</span>
+            <span id="month" class="month">JULY, 2024</span>
+            <span id="month" class="time">AT 21:00 PM</span>
+          </div>
+          <div class="ticket-main-title"></div>
+          <div class="ticket-main-location"></div>
+        </div>
+      </div>
+      <div class="right"></div>
+
+      <!-- <div class="date">
+        <span id="day" class="day">31</span>
+        <span id="month-time" class="month-and-time">OCT<br /><span class="small">8PM</span></span>
+      </div>
+
+      <div class="artist">
+        <span id="artist-name" class="name">LINKIN PARK</span>
+        <br />
+        <span id="artist-live" class="live small">LIVE</span>
+      </div>
+
+      <div class="location">
+        <span id="location-main">KINGSTON TOWN</span>
+        <br />
+        <span id="location-details" class="small"><span>WICKED STADIUM</span></span> -->
+      <!-- </div> -->
+
+      <div class="rip"></div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script>
+      async function updateTicket(data) {
+        document.getElementById("day").innerText = data.day;
+        document.getElementById("month-time").innerHTML = `${data.month}<br><span class="small">${data.time}</span>`;
+        document.getElementById("artist-name").innerText = data.artistName;
+        document.getElementById("artist-live").innerText = data.artistLive;
+        document.getElementById("location-main").innerText = data.locationMain;
+        document.getElementById("location-details").innerHTML = `${data.locationDetails}`;
+      }
+
+      async function generatePDF() {
+        const ticketData = {
+          day: "31",
+          month: "OCT",
+          time: "8PM",
+          artistName: "LINKIN PARK",
+          artistLive: "LIVE",
+          locationMain: "KINGSTON TOWN",
+          locationDetails: "WICKED STADUM",
+        };
+
+        await updateTicket(ticketData);
+
+        const { jsPDF } = window.jspdf;
+
+        const ticketElement = document.getElementById("ticket");
+
+        const canvas = await html2canvas(ticketElement, {
+          useCORS: true,
+          scale: 2,
+        });
+
+        const imageData = canvas.toDataURL("image/png");
+
+        const pdf = new jsPDF("landscape", "pt", [canvas.width, canvas.height]);
+
+        pdf.addImage(imageData, "PNG", 0, 0, canvas.width, canvas.height);
+
+        pdf.save("ticket.pdf");
+      }
+    </script>
+  </body>
+</html>
